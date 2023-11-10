@@ -1,0 +1,72 @@
+.titulo {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h2 {
+    padding: 15px;
+    color: red;
+    background-color: rgba(128, 128, 128, 0.482);
+    border-radius: 20px;
+}
+
+.users {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registro {
+    margin-right: 40px;
+}
+
+.Submit {
+    margin-left: 25px;
+}
+
+th {
+    padding-left: 20px;
+}
+
+td {
+    padding-left: 20px;
+}
+
+.actions {
+    font-size: 18px;
+    color: #000000;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+button:focus,
+button:hover {
+    color: #ff0000;
+}
+
+button:focus:after,
+button:hover:after {
+    width: 100%;
+    left: 0%;
+}
+
+button:after {
+    content: "";
+    pointer-events: none;
+    bottom: -2px;
+    left: 50%;
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: #ff0000;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: width, left;
+}

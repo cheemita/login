@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CRUD de Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="titulo">
+        <h2>NOMBRES/CORREOS DE MIS AMIGOS</h2>
+    </div>
+
+    <!-- Formulario para agregar un nuevo usuario -->
+    <div class="users">
+        <div id="addUserForm" class="registro">
+            <input type="text" name="nombre" id="nombre" placeholder="Nombre" required autocomplete="off"><br><br>
+            <input type="text" name="apellido" id="apellido" placeholder="Apellido" required autocomplete="off"><br><br>
+            <input type="email" name="email" id="email" placeholder="Correo electronico" required autocomplete="off"><br><br>
+            <button class="Submit actions" type="button" onclick="addUser()">Agregar Usuario</button>
+        </div>
+    
+        <br>
+    
+        <!-- Tabla para mostrar y manipular datos de usuarios -->
+        <table border="1" id="userTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    
+    <script>
+        window.onload = function () {
+            performAction('read');
+        };
+
+        function addUser() {
+            var nombre = document.getElementById('nombre').value;
+            var apellido = document.getElementById('apellido').value;
+            var email = document.getElementById('email').value;
+
+            // Realizar la solicitud POST al servidor
+            var formData = new FormData();
+            formData.append('action', 'create');
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('email', email);
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    // Maneja la respuesta del servidor aquí si es necesario
+                    var response = this.responseText;
+                    console.log(response); // Puedes mostrar la respuesta del servidor en la consola
+                    // Actualiza la tabla o realiza alguna otra acción en función de la respuesta del servidor
+                    performAction('read'); // Recargar la tabla con los datos actualizados
+                }
+            };
+            xhttp.open('POST', 'index.php', true);
+            xhttp.send(formData);
+        }
+
+
+        function performAction(action, userId, nombre, apellido, email) {
+            var formData = new FormData();
+            formData.append('action', action);
+            formData.append('userId', userId);
+
+            if (action === 'update') {
+                formData.append('nombre', nombre);
+                formData.append('apellido', apellido);
+                formData.append('email', email);
+            }
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    if (action === 'read') {
+                        var response = JSON.parse(this.responseText);
+                        renderUsers(response);
+                    } else {
+                        alert(this.responseText); // Muestra la respuesta del servidor (éxito o error)
+                    }
+                }
+            };
+            xhttp.open('POST', 'index.php', true);
+            xhttp.send(formData);
+        }
+
+        function renderUsers(users) {
+            var tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = '';
+
+            users.forEach(function (user) {
+                var row = document.createElement('tr');
+                row.innerHTML = '<td>' + user.nombre + '</td>' +
+                    '<td>' + user.apellido + '</td>' +
+                    '<td>' + user.email + '</td>' +
+                    '<td><button class="actions" onclick="openPopup(\'update\', ' + user.id + ', \'' + user.nombre + '\', \'' + user.apellido + '\', \'' + user.email + '\')" >Editar</button>' +
+                    ' <button class="actions" onclick="performAction(\'delete\', ' + user.id + ')">Eliminar</button></td>';
+                tableBody.appendChild(row);
+            });
+        }
+
+        function openPopup(action, userId, nombre, apellido, email) {
+            if (action === 'update') {
+                var newNombre = prompt('Ingrese el nuevo nombre:', nombre);
+                var newApellido = prompt('Ingrese el nuevo apellido:', apellido);
+                var newEmail = prompt('Ingrese el nuevo email:', email);
+
+                if (newNombre !== null && newApellido !== null && newEmail !== null) {
+                    performAction('update', userId, newNombre, newApellido, newEmail);
+                } else {
+                    alert('Por favor, complete todos los campos.');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
