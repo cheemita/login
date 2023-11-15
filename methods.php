@@ -84,13 +84,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
         elseif ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-            ob_end_clean(); 
+            header("Acces-Control-Allow-Origin: *");
+            header("hello");
 
             echo "Método HEAD no está implementado";
         }
         elseif ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
-            
-            header("HTTP/1.1 200 OK");
+            header("Acces-Control-Allow-Origin: *");
+            header("hello");
             
             exit;
             echo "Método OPTIONS no está implementado";
